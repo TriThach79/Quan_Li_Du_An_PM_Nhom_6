@@ -1,0 +1,71 @@
+{% extends '../base.html' %}
+{% block title %} Đăng kí
+{% endblock title %}
+{% block content %}
+<style>
+    .account-form input {
+        border: 2px solid #ccc;
+        height: calc(2em + .75rem + 2px);
+    }
+
+    .account-form input:focus {
+        border-color: #1497ff;
+        box-shadow: none;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-items-center py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-7  mx-auto">
+                             <form class="account-form p-4 rounded col-lg-10 mx-auto" action="." method="post">
+                                {% csrf_token %}
+                                <h3 class="mb-2 font-weight-bold">ĐĂNG KÍ TÀI KHOẢN</h3>
+                                {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-primary {{ message.tags }}" role="alert">
+                                    {{message}}
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                                {% if form.errors %}
+                                {% for field in form %}
+                                {% if field.errors %}
+                                <div class="alert alert-primary" role="alert">
+                                    {{ field.label }}: {{ field.errors|striptags }}
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                                <label>{{ form.username.label }}<span class="text-muted small">
+                                        (Required)</span></label>
+                                {{ form.username }}
+                                <label>{{ form.email.label}}<span class="text-muted small">
+                                        (Required)</span></label>
+                                {{ form.email }}
+                                <label>{{ form.password.label}}<span class="text-muted mb-4">
+                                        </span></label>
+                                 <small class="form-text text-muted mb-4 small">
+                                    At least 8 characters and 1 digit
+                                </small>
+                                {{ form.password }}
+                                <label>{{ form.password2.label}}<span class="text-muted small">
+                                        (Required)</span></label>
+                                {{ form.password2 }}
+                                <button class="btn btn-success btn-block py-2 mb-4 mt-5 fw500 w-100" type="submit">Đăng kí</button>
+                                <p class="text-center">
+                                    <a href="{% url 'store:login' %}">Đã có tài khoản?</a>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}My shop{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static '/css/style5.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  
+    <script src= 'https://code.jquery.com/jquery-3.6.1.min.js' integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    {% comment %} <meta http-equiv="Content-Security-Policy" content="default-src 'self'; child-src 'none'; object-src 'none'"> {% endcomment %}
+
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-light border-bottom p-3" style="background-color: #346e51 !important;">
+            <div class="container">
+                <a class="navbar-brand text-light fw-bold" href="/">Hasake</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Loại
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                {% for c in categories %}
+                                <li {% if category.slug == c.slug %} class="selected" {% endif %}>
+                                    <a class="dropdown-item" href="{{ c.get_absolute_url }}">{{ c.title|title }}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        
+                    </ul>
+                    <form id="form-search-id"class="d-flex mx-2" action="{% url "store:search" %}">
+                        <input id="search-id" name = "q" class="form-control me-1 search_class"  type="text" placeholder="Tìm kiếm" aria-label="Search">
+                        <button class="btn btn-outline-light" type="submit" id = "search_button"><img src="https://hasaki.vn/images/graphics/icon_search_48x48_white.png" class="icon_search w-50 loading" data-was-processed="true"></button>
+                    </form>
+                    <a name="" id="" class="btn btn-outline-light ms-2 position-relative mx-2" href="{% url "cart:cart_summary" %}" role="button">
+                        <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-basket2" viewBox="0 0 16 16">
+                            <path d="M4 10a1 1 0 0 1 2 0v2a1 1 0 0 1-2 0v-2zm3 0a1 1 0 0 1 2 0v2a1 1 0 0 1-2 0v-2zm3 0a1 1 0 1 1 2 0v2a1 1 0 0 1-2 0v-2z"/>
+                            <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-.623l-1.844 6.456a.75.75 0 0 1-.722.544H3.69a.75.75 0 0 1-.722-.544L1.123 8H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM2.163 8l1.714 6h8.246l1.714-6H2.163z"/>
+                            <span id="cart_qty" class="position-absolute top-30 start-100 translate-middle badge rounded-pill bg-danger">
+                                {% with total_qty=cart|length %}
+                                    {% if total_qty > 0 %}
+                                        {{total_qty}}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                {% endwith %}
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                        </svg> 
+                        
+                    </a>
+
+                    <ul class="navbar-nav mb-2 mb-md-0">
+                        <li class="nav-item dropdown account ms-2">
+                            <a class="nav-link dropdown-toggle  btn btn-outline-light" style="padding: 6px 12px;" href="#" id="navbarDropdownAccount" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.is_authenticated %}
+                                {{ user.username }}
+                            {% else %}
+                                Tài khoản
+                            {% endif%}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                         
+                            {% if user.is_authenticated %}
+                                <li><a class="dropdown-item" href="{% url 'store:profile' %}">Thông tin người dùng</a></li>
+                                <li><a class="dropdown-item" href="{% url 'store:dashboard' %}">Đơn hàng của bạn</a></li>
+                                {% if user.is_superuser %}
+                                <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'store:logout' %}">Đăng xuất</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'store:login' %}">Đăng nhập</a></li>
+                                <li><a class="dropdown-item" href="{% url 'store:register' %}">Đăng kí</a></li>   
+                            {% endif %}
+                    
+                            </ul>
+                          </li>
+                    </ul>
+                </div>
+
+
+
+            </div>
+        </nav>
+    </header> 
+
+    <div id="content" class="container">{% block content %} {% endblock %}</div>
+    <hr>
+    
+    <footer class="container py-5">
+        <div class="row">
+          <div class="col-3 col-md">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mb-2"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg>
+            <small class="d-block mb-3 text-muted">© 2023-2024</small>
+          </div>
+          <div class="col-3 col-md">
+            <h5>Liên hệ</h5>
+            <ul class="list-unstyled text-small">
+              <li><img width="30" height="30" src="https://img.icons8.com/material-outlined/30/mail.png" alt="mail"/>1951012145tri@ou.edu.vn</li>
+              <li class='mt-2'><img width="30" height="30" src="https://img.icons8.com/ios/30/phone--v1.png" alt="phone--v1"/>0853789410</li>
+            </ul>
+          </div>
+          <div class="col-3 col-md">
+            <h5>Về chúng tôi</h5>
+            <ul class="list-unstyled text-small">
+              <li class='mt-2'><a class="text-muted" href="#"><img width="30" height="30" src="https://img.icons8.com/ios/24/facebook-new.png" alt="facebook-new"/></a></li>
+              <li class='mt-2'><a class="text-muted" href="#"><img width="30" height="30" src="https://img.icons8.com/ios/30/instagram-new--v1.png" alt="instagram-new--v1"/></a></li>
+              <li class='mt-2'><a class="text-muted" href="#"><img width="30" height="30" src="https://img.icons8.com/ios/30/youtube-play--v1.png" alt="youtube-play--v1"/></a></li>
+            </ul>
+          </div>
+          <div class="col-3 col-md">
+            <h5>Địa chỉ</h5>
+            <ul class="list-unstyled text-small">
+                <li>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.1637553825344!2d106.677298375146!3d10.79876708935135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528d7035ef10f%3A0xf28eba62ba1c6718!2zMTFBIEhvw6BuZyBWxINuIFRo4bulLCBQaMaw4budbmcgMTUsIFBow7ogTmh14bqtbiwgVGjDoG5oIHBo4buRIEjhu5MgQ2jDrSBNaW5oIDA3MDAwMCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1696486410615!5m2!1svi!2s" width="350" height="150" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </li>
+            </ul>
+          </div>
+          {% comment %} <div class="col-6 col-md">
+            <h5>Resources</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="#">Business</a></li>
+              <li><a class="text-muted" href="#">Education</a></li>
+              <li><a class="text-muted" href="#">Government</a></li>
+              <li><a class="text-muted" href="#">Gaming</a></li>
+            </ul>
+          </div> {% endcomment %}
+
+        </div>
+      </footer>
+</body>
+</html>

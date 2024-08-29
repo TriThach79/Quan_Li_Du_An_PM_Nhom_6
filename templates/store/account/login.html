@@ -1,0 +1,82 @@
+{% extends '../base.html' %}
+{% block title %} Đăng nhập
+{% endblock title %}
+{% block content %}
+<style>
+    .container-fluid {
+        max-width: 100%;
+    }
+
+    .account-form input {
+        border: 2px solid #ccc;
+        height: calc(2em + .75rem + 2px);
+    }
+
+    .account-form input:focus {
+        border-color: #1497ff;
+        box-shadow: none;
+    }
+</style>
+
+
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-items-center py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-6  mx-auto">
+                            <form class="account-form p-4 rounded" action="{% url 'store:login' %}" method="post">
+
+                                {% csrf_token %}
+                                <h3 class="mb-4">Đăng Nhập</h3>
+                                {% if messages %}
+                                    {% for message in messages %}
+                                    <div class="alert alert-primary {{ message.tags }}" role="alert">
+                                        {{message}}
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if form.errors %}
+                                    {% for field in form %}
+                                        {% if field.errors %}
+                                        <div class="alert alert-primary" role="alert">
+                                            {{ field.label }}: {{ field.errors|striptags }}
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+
+                                <label class="form-label">{{ form.username.label}}</label>
+                                {{ form.username}}
+
+                                <label class="form-label">{{ form.password.label}}</label>
+                                {{ form.password}}
+                                
+                                <p class="">
+                                    <a href="{% url "store:password_reset" %}">Quên mật khẩu?</a>
+                                </p>
+                                <div class="d-grid gap-2">
+                                    <input type="hidden" name="next" value="{{ next }}">
+                                    <button class="btn btn-primary py-2 mb-4 mt-4 fw-bold" type="submit" value="Log-in">Đăng nhập
+                                    </button>
+                                </div>
+                                <p class="text-center pb-3">
+                                    <a href="{% url "store:register" %}">Bạn chưa có tài khoản?</a>
+                                </p>
+                            </form>
+                            <p class="small text-center pt-4">
+                                {% comment %} <a href="{% url "password_reset" %}">Forgotten Password?</a> {% endcomment %}
+                            </p>
+                            <p class="small text-center">
+                                {% comment %} <a href="{% url "accounts:register" %}">Help Center?</a> {% endcomment %}
+                            </p>
+                     
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
