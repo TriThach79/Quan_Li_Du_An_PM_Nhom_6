@@ -1,0 +1,144 @@
+{% extends "admin/base_site.html" %}
+
+{% load static %}
+{% comment %} <scripts href={% static 'js/stats.js' %}></scripts> {% endcomment %}
+
+{% block content %}
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"> </script>
+<div class="row mb-5">
+    <form class='form-inline'>
+        <div class="form-group">
+            <label class="mx-2">Nhập tháng</label>
+            <input type="number" min="1" max="12" placeholder="" name="month" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label class="mx-2">Từ ngày</label>
+            <input type="date" name="from_date" class="form-control" />
+        </div>
+        <div class="form-group mx-sm-3">
+            <label class="mx-2">Đến ngày</label>
+            <input type="date" name="to_date" class="form-control" />
+        </div>
+        <div>
+            <input type="submit" value="Lọc dữ liệu" class="btn btn-info" />
+        </div>
+    </form>
+</div>
+<div class="row mb-5">
+    <div class="col-sm-6 px-5">
+        <canvas id="myChart" width="400" height="500"></canvas>
+    </div>
+    <div class="col-sm-6 px-5">
+        <canvas id="myChart2" width="400" height="500"></canvas>       
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6 px-5">
+        <canvas id="myChart3" width="400" height="500"></canvas>
+    </div>
+    <div class="col-sm-6 px-5">
+        <canvas id="myChart4" width="400" height="500"></canvas>
+    </div>
+</div>
+
+<script>
+
+function loadChart(ctx, type, labels, data, label, x_title, y_title, colors, borderColors){
+
+    var myChart = new Chart(ctx, {
+        type: type,
+        data: {
+            labels: labels,
+            datasets: [{
+                label: label,
+                data: data,
+                backgroundColor: colors
+                ,
+                borderColor: borderColors
+                ,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: y_title
+                    },
+                    ticks: {
+                        precision: 0,
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: x_title
+                    }
+                }
+            }
+        }
+    });
+}; 
+window.onload = function() {
+    let data1 = []
+    let labels1 = []
+    let data2 = []
+    let labels2 =[]
+    let data3 = []
+    let labels3 =[]
+    let data4 = []
+    let labels4 =[]
+    let colors = []
+    let borderColors = []
+    let colors2 = []
+    let borderColors2 = []
+
+    {% for r in revenue_by_month %}
+    labels1.push({{r.0}})
+    data1.push({{r.1}})
+    r = Math.random() * 255
+    g = Math.random() * 255
+    b = Math.random() * 255
+    colors.push(`rgba(${r}, ${g}, ${b}, 0.2)`)
+    borderColors.push(`rgba(${r}, ${g}, {$b}, 1)`)
+    {% endfor %}
+
+    {% for c in count_by_month %}
+    labels2.push({{c.0}})
+    data2.push({{c.1}})
+    {% endfor %}
+
+    
+    {% for r in revenue_by_day %}
+    labels3.push({{r.0}})
+    data3.push({{r.1}})
+    r = Math.random() * 255
+    g = Math.random() * 255
+    b = Math.random() * 255
+    colors2.push(`rgba(${r}, ${g}, ${b}, 0.2)`)
+    borderColors2.push(`rgba(${r}, ${g}, {$b}, 1)`)
+    {% endfor %}
+
+    {% for c in count_by_day %}
+    labels4.push({{c.0}})
+    data4.push({{c.1}})
+    {% endfor %}
+
+
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const ctx2 = document.getElementById('myChart2').getContext('2d');
+    const ctx3 = document.getElementById('myChart3').getContext('2d');
+    const ctx4 = document.getElementById('myChart4').getContext('2d');
+
+    loadChart(ctx, 'bar', labels1, data1, 'Doanh thu theo tháng', 'Tháng', 'Doanh thu', colors, borderColors);
+    loadChart(ctx2, 'bar', labels2, data2,'Số đơn hàng theo tháng', 'Tháng', 'Số đơn', colors, borderColors);
+    loadChart(ctx3, 'line', labels3, data3,'Doanh thu theo ngày', 'Ngày', 'Doanh thu', colors2, borderColors2);
+    loadChart(ctx4, 'line', labels4, data4, 'Số đơn theo ngày', 'Ngày', 'Số đơn', colors2, borderColors2);
+
+}
+</script>
+
+{% endblock %}
