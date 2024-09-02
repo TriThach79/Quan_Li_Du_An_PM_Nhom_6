@@ -1,0 +1,154 @@
+{% extends '../base.html'%}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% block title %} HOME PAGE {% endblock %}
+{% block content %} 
+<link rel="stylesheet" href="{% static "css/price_slider.css" %}">
+<script src="{% static "js/price_slider.js" %}"></script>
+<!--SLIDER-->
+<div id="carouselExampleIndicators" class="carousel slide mt-4" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="https://media.hasaki.vn/hsk/1666345772homecogia-(8).jpg" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="https://media.hasaki.vn/hsk/16663466109f3947bf-e9ec-4ef6-a0fa-a244a845921b.png" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="https://media.hasaki.vn/hsk/1666345509homecogia-(9).jpg" class="d-block w-100" alt="...">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+<!--END SLIDER-->
+</div>
+<!--SHOW PRODUCTS-->
+  <div class="list-product mt-5">
+      <div class="row">
+          <h2 class = "list-product-title">{{category.title|title}}</h2>
+          <div class="list-product-description pb-3">
+            <p>List product description</p>
+          </div>
+
+          <!-- Price Slider-->
+          
+        </div>
+      </div>
+      <div class="row container">
+        <div class="col-2">
+        </div>
+        {% comment %} <div class="form-group col-4 px-4 mx-4">
+          <label for="sapXep">Sắp xếp theo</label>
+          <select class="custom-select mx-2" name="" id="sapXep">
+            <option selected>Mới nhất</option>
+            <option value="">Giá thấp đến cao</option>
+            <option value="">Giá cao đến thấp</option>
+          </select>
+        </div> {% endcomment %}
+        <form class="col-4 px-4 mx-2 d-inline-flex">
+          <label class="mt-2 mx-2">Sắp xếp theo</label>
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              Mặc định
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li>
+                <input type="submit" value="asc" name="sorting" class="btn-check" id="price_asc" autocomplete="off">
+                <label class="btn" for="price_asc">Giá thấp đến cao</label>
+              </li>
+              <li>
+                <input type="submit" value="desc" name="sorting" class="btn-check" id="price_desc" autocomplete="off">
+                <label class="btn" for="price_desc">Giá cao đến thấp</label>
+              </li>
+              <li>  
+                <input type="submit" value="latest" name="sorting" class="btn-check" id="latest" autocomplete="off">
+                <label class="btn" for="latest">Mới nhất</label>
+              </li>
+            </ul>
+          </div>
+        </form>
+      </div>
+      <hr>
+      <div class="product-group">
+
+      <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+            <div class="col-lg-3 col-md-5">
+              <div class="sidebar">
+                  <div class="sidebar__item">
+                      <h4>Chăm sóc da mặt</h4>
+                      <ul>
+                        {% for c in categories  %}
+                          <li><a href="{{c.get_absolute_url}}" class="text-decoration-none">{{c.title}}</a></li>
+                        {% endfor %}
+                      </ul>
+                  </div>
+                  <hr>
+                  <div class="sidebar__item">
+                      <h4>Khoảng giá</h4>
+                  </div>
+                  <div class = "sidebar__item">
+                    <form>
+                      <div class="row">
+                        <div class="col">
+                            {% comment %} <label class="mx-2">Từ ngày</label> {% endcomment %}
+                            <input type="number" name="from_price" min="0" class="form-control" placeholder="Giá từ" />
+                        </div>
+                        <div class="col mx-sm-3">
+                            {% comment %} <label class="mx-2">Đến ngày</label> {% endcomment %}
+                            <input type="number" name="to_price" min="0" class="form-control"  placeholder="Đến"/>
+                        </div>
+                      </div>
+                      <div class="text-center">
+                          <input type="submit" value="Lọc giá" class="btn btn-success mt-3 text-center search-price" />
+                      </div>
+                  </form>
+                  </div>
+
+              </div>
+            </div>              
+            {% for product in products%}
+              <div class="col">
+                <div class="card col-product"> <a class="text-dark text-decoration-none" href="{{product.get_absolute_url}}"> 
+                      <img class="card-img-top img-resize" src="{{ product.image.url }}" alt="Card image cap">
+                      <div class="card-body">
+                        <div class="product-price">
+                          <span class='new-price'>{{ product.price|intcomma}} đ</span>
+                          {% if product.old_price != 0 %}
+                          <span class = "discount-percent">{% widthratio product.price product.old_price 100 as sale%} {{100|sub:sale}}%</span>
+                          <span class='old-price px-1'>{{product.old_price|intcomma}} đ</span>
+                          {% endif %}
+                      </div>
+                        <p class="card-title product-title">{{ product.category.title }}</p>
+                        <p class="card-text product-name mb-2">{{ product.title}}</p>
+                        {% comment %} <a href="#" class="btn btn-success w-100">Thêm vào giỏ hàng</a> {% endcomment %}
+                        <button type="button" id="add-button" data-index="{{product.id}}" class="btn btn-success w-100 add-button">Thêm vào giỏ</button>
+                      </div>
+                    </a>
+                </div>
+              </div>
+            {% endfor %}
+            
+          </div>
+
+            </div>
+          </div>
+      </div>
+  </div>
+
+<!--END PRODUCTS-->
+
+{% endblock %}
