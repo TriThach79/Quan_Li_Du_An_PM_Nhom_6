@@ -18,5 +18,6 @@ urlpatterns = [
     form_class = UserLoginForm), name = 'login'),
     path('account/logout/', auth_views.LogoutView.as_view(next_page='store:login'),
     name = 'logout'),
+    path('search/',views.search,name='search'),
 
 ]

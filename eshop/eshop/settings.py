@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'mathfilters',
     'store.apps.StoreConfig',
     'crispy_forms',
     'crispy_bootstrap4',
@@ -87,7 +89,7 @@ DATABASES = {
         "NAME": "hasake_db",
         "USER": "thientri",
         "PASSWORD": "Saym4hnametri",
-        "HOST": "192.168.1.8",
+        "HOST": "192.168.1.23",
         "PORT": "3306",
     }
 }

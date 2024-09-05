@@ -58,6 +58,20 @@ def category_list(request, category_slug):
 
     return render(request, 'products/category.html', {'category': category, 'products': products})
 
+def search(request):
+    q=request.GET.get('q')
+    sorting = request.GET.get('sorting')
+    data=Product.objects.filter(Q(title__icontains = q) | Q(category__title__icontains = q)).order_by('-id')
+    if sorting == 'asc':
+        data = data.order_by('price')
+    if sorting == 'desc':
+        data = data.order_by('-price')
+    if sorting == 'latest':
+        data = data.order_by('created')
+    if not data.count():
+        messages.error(request,'Không tìm thấy sản phẩm!')
+    return render(request,'products/search.html',{'data':data})
+
 def user_register(request):
     if request.user.is_authenticated:
         return redirect('/')
