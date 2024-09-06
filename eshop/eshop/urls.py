@@ -23,6 +23,7 @@ from store.admin import custom_admin_site
 urlpatterns = [
     path('admin/', custom_admin_site.urls),
     path('', include('store.urls', namespace='store')),
+    path('cart/', include('cart.urls', namespace='cart')),
 ]
 
 if settings.DEBUG:
