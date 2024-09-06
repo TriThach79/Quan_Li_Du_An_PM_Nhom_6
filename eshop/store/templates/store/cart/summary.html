@@ -1,0 +1,136 @@
+{% extends '../base.html'%}
+{% load static %}
+{% load humanize %}
+{% block title %} GIỎ HÀNG {% endblock %}
+{% block content %}
+
+<style>
+  .checkout p, .checkout div.total {
+    color: #ff6600 !important;
+}
+  .checkout {
+    font-family: 'Roboto', sans-serif;
+
+  }
+</style>
+
+
+  <main class="container my-5" id="cartList">
+
+    <div class="row">
+      <div class="col-md-9">
+        <h3 class="my-4 border-bottom pb-1">Giỏ hàng của bạn</h3>
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-primary {{ message.tags }}" role="alert">
+            {{message}}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <table class="table table-bordered">
+      <thead>
+        <tr bgcolor="grey" border="2">
+          <th>Sản phẩm</th>
+          <th>Số lượng</th>
+          <th>Giá tiền</th>
+          <th>Thành tiền</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart %}
+        {% with product=item.product %}
+        <tr class="product-item" data-index="{{product.id}}">
+          <td class = "w-25">
+            <img src="{{ product.image.url }}" width="50" />
+            <p><a href="{{item.product.get_absolute_url}}" class = "text-decoration-none fw-bold text-dark">{{product.title}}</a></p>
+          </td>
+          <td class="align-middle">
+            {% comment %} <select id="select{{product.id}}" style="width:50px;height:31px;">
+              <option value="" selected disabled hidden>{{item.soluong}}</option>
+              <option value="">1</option>
+              <option value="">2</option>
+              <option value="">3</option>
+              <option value="">4</option>
+              <option value="">5</option>
+            </select> {% endcomment %}
+            <div class="dieuchinh">
+              <span class="minus">-</span>
+              <span id="product_qty{{product.id}}" class="num">{{item.soluong}}</span>
+              <span class="plus">+</span>
+            </div>
+          </td>
+          <td class = "w-25 text-center align-middle">{{product.price|intcomma}}</td>
+          <td class = "w-25 text-center align-middle" id = 'item-total{{product.id}}'>{{item.total_price|intcomma}}</td>
+          <td class = "w-25 text-center align-middle">
+            <a type="button" id="update-button" data-index="{{product.id}}" class="update-button text-decoration-none btn btn-primary small p-2">Cập nhật</a>
+            <a type="button" id="delete-button" data-index="{{product.id}}" class="delete-button text-decoration-none btn btn-danger small m-1">Xóa</a>
+          </td>
+        </tr>
+        {% endwith %} 
+        {% endfor %}
+      </tbody>
+    </table>
+      </div>
+      <div class="col-md-3">
+        <h3 class="my-4 border-bottom pb-1">Thông tin hóa đơn</h3>
+        <div class="card">
+          <div class="card-body">
+            <div class="checkout text-end">
+              <p class = 'fw-bold'>Hóa đơn của bạn</p>
+              <hr />
+              <div class="">Tạm tính: <div id="subtotal" class="d-inline-flex text-end fw-bold">{{cart.total_cart_price|intcomma}}</div><span class="fw-bold"> đ</span></div>
+              <div id="">Phí vận chuyển <span class="small">(Dự kiến 3 ngày)</span>: <span class="fw-bold"> 0 đ</span></div>
+              <hr />
+              <div class="pt-2">Tổng cộng: <div id="total" class="d-inline-flex fw-bold h5 total">{{cart.total_cart_price|intcomma}}</div><span class="fw-bold"> đ</span></div>
+              <div class="d-grid gap-2 mt-2">
+                <a role="button" href="#" id="order_button" class="btn btn-success fw-bold order_button" type="button">Tiến hành đặt hàng</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    plus = document.querySelectorAll(".plus"),
+    minus = document.querySelectorAll(".minus"),
+    {% comment %} num = document.querySelectorAll(".num"); {% endcomment %}
+    {% comment %} let a = document.getElementById("product_qty").innerText; {% endcomment %}
+    {% comment %} plus.forEach(p => {
+      p.addEventListener("click", ()=>{
+        a++;
+        a = (a < 10) ? "0" + a : a;
+        num.innerText = a;
+      });
+    }) {% endcomment %}
+    plus.forEach(p => {
+      p.addEventListener("click", function(event){
+        buttonClicked = event.target;
+        quantity = buttonClicked.parentElement.children[1];
+        new_quantity = parseInt(quantity.innerText) + 1;
+        quantity.innerText = (new_quantity < 10) ? "0" + new_quantity : new_quantity;
+      });
+    })
+    minus.forEach(m => {
+      m.addEventListener("click", function(event){
+        buttonClicked = event.target;
+        quantity = buttonClicked.parentElement.children[1];
+        new_quantity = parseInt(quantity.innerText) - 1;
+        if (new_quantity > 0) {
+          quantity.innerText = (new_quantity < 10) ? "0" + new_quantity : new_quantity;
+        }
+        else
+          quantity.innerText = 0;
+      });
+    })
+
+  {% comment %} var cart_len = JSON.parse("{{cart|escapejs}}"); {% endcomment %}
+    {% if cart|length == 0 %}
+      document.getElementById("order_button").setAttribute("href","#");
+    {% endif %}
+
+    
+   </script>
+{% endblock %}

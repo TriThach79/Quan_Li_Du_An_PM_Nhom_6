@@ -210,7 +210,28 @@
     </ul>
   </nav>
 
-  <script>  
+  <script>
+    $(document).on('click', '.add-button', function (e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart:cart_add" %}',
+            data: {
+                productid: $(this).data('index'),
+                productqty: 1,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(json){
+                document.getElementById("cart_qty").innerText = json.soluong
+                console.log(json)
+            },
+            error: function (xhr, errmsg, err){
+                
+            }
+        });
+    })
+  
     $(document).ready(function()
 {
 

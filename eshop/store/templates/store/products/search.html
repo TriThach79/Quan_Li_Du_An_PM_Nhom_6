@@ -1,0 +1,107 @@
+{% extends '../base.html'%}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% block title %} HOME PAGE {% endblock %}
+{% block content %} 
+<!--SHOW PRODUCTS-->
+<div class="list-product mt-5">
+    <div class="row">
+        <h2 class = "list-product-title">Danh sách sản phẩm</h2>
+        <div class="list-product-description pb-3">
+          <p>Kết quả tìm kiếm của "{{request.GET.q}}"</p>
+          {% if not data %}
+          {% if messages %}
+            {% for message in messages %}
+            <p>{{message}}</p>
+            {% endfor %}
+          {% endif %}
+          {% endif %}
+        </div>
+    </div>
+    {% if data %}
+    <div class="row container">
+      <div class="col-9">   
+      </div>
+      <form class="d-inline-flex col-3">
+        <label class="mt-2 mx-2">Sắp xếp theo</label>
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Mặc định
+          </button>
+          <input type="hidden" name="q" value="{{request.GET.q}}">
+
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li>
+              <input type="submit" value="asc" name="sorting" class="btn-check" id="price_asc" autocomplete="off">
+              <label class="btn" for="price_asc">Giá thấp đến cao</label>
+            </li>
+            <li>
+              <input type="submit" value="desc" name="sorting" class="btn-check" id="price_desc" autocomplete="off">
+              <label class="btn" for="price_desc">Giá cao đến thấp</label>
+            </li>
+            <li>  
+              <input type="submit" value="latest" name="sorting" class="btn-check" id="latest" autocomplete="off">
+              <label class="btn" for="latest">Mới nhất</label>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
+
+    <hr>
+    {% endif %}
+
+      <div class="container product-group">
+        <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+        {% for product in data %}
+        <div class="col">
+          <div class="card col-product">
+              <a class="text-dark text-decoration-none" href="{{product.get_absolute_url}}">
+                <img class="card-img-top img-resize" src="{{ product.image.url }}" alt="Card image cap">
+                
+                <div class="card-body">
+                  <div class="product-price">
+                      <span class='new-price'>{{ product.price|intcomma}} đ</span>
+                      {% if product.old_price != 0 %}
+                      <span class = "discount-percent">{% widthratio product.price product.old_price 100 as sale%} {{100|sub:sale}}%</span>
+                      <span class='old-price px-1'>{{product.old_price|intcomma}} đ</span>
+                      {% endif %}
+
+                  </div>
+                  <p class="card-title product-title">{{ product.category.title }}</p>
+                  <p class="card-text product-name mb-2">{{ product.title}}</p>
+              </a>
+
+                  <button type="button" id="add-button" data-index="{{product.id}}" class="btn btn-success w-100 add-button">Thêm vào giỏ</button>
+                </div>
+          </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>  
+
+<script>
+  $(document).on('click', '.add-button', function (e){
+      e.preventDefault();
+      $.ajax({
+          type: 'POST',
+          url: '{% url "cart:cart_add" %}',
+          data: {
+              productid: $(this).data('index'),
+              productqty: 1,
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              action: 'post'
+          },
+          success: function(json){
+              document.getElementById("cart_qty").innerText = json.soluong
+              console.log(json)
+          },
+          error: function (xhr, errmsg, err){
+              
+          }
+      });
+  })
+</script>
+  {% endblock %} 

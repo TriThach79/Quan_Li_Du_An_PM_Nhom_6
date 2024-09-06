@@ -70,5 +70,29 @@
 
     </div>
 </div>
-
+<script>
+    $(document).on('click', '#add-button', function (e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart:cart_add" %}',
+            data: {
+                productid: $('#add-button').val(),
+                productqty: document.getElementById("product_qty").innerText,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(json){
+                document.getElementById("cart_qty").innerText = json.soluong
+                console.log(json)
+            },
+            error: function (xhr, errmsg, err){
+                
+            }
+        });
+    })
+    {% if not product.is_active %}
+        document.getElementById('add-button').classList.add('disabled')
+    {% endif %}
+</script>
 {% endblock %}
