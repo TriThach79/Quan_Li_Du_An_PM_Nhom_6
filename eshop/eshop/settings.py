@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'mathfilters',
+    'paypal.standard.ipn',
+    'checkout.apps.CheckoutConfig',
+    'cart.apps.CartConfig',
     'store.apps.StoreConfig',
     'crispy_forms',
     'crispy_bootstrap4',
@@ -162,3 +165,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 # This means the token will expire after 15mins(900seconds)
 PASSWORD_RESET_TIMEOUT = 900
+
+PAYPAL_RECEIVER_EMAIL = 'sb-rd1jy27136850@business.example.com'
+PAYPAL_TEST = True

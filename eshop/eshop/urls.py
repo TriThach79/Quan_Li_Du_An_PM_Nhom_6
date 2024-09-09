@@ -24,6 +24,8 @@ urlpatterns = [
     path('admin/', custom_admin_site.urls),
     path('', include('store.urls', namespace='store')),
     path('cart/', include('cart.urls', namespace='cart')),
+    path('checkout/', include('checkout.urls', namespace='checkout')),
+    path('paypal/', include("paypal.standard.ipn.urls")),
 ]
 
 if settings.DEBUG:

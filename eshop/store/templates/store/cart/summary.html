@@ -84,7 +84,7 @@
               <hr />
               <div class="pt-2">Tổng cộng: <div id="total" class="d-inline-flex fw-bold h5 total">{{cart.total_cart_price|intcomma}}</div><span class="fw-bold"> đ</span></div>
               <div class="d-grid gap-2 mt-2">
-                <a role="button" href="#" id="order_button" class="btn btn-success fw-bold order_button" type="button">Tiến hành đặt hàng</a>
+                <a role="button" href="{% url 'checkout:paypal_checkout' %}" id="order_button" class="btn btn-success fw-bold order_button" type="button">Tiến hành đặt hàng</a>
               </div>
             </div>
           </div>
@@ -92,7 +92,64 @@
       </div>
     </div>
   </main>
-
+  <script>
+    // Xóa sản phẩm
+    $(document).on('click', '.delete-button', function (e) {
+      e.preventDefault();
+      var prodid = $(this).data('index');
+      $.ajax({
+        type: 'POST',
+        url: '{% url "cart:cart_delete" %}',
+        data: {
+          productid: $(this).data('index'),
+          csrfmiddlewaretoken: "{{csrf_token}}",
+          action: 'post'
+        },
+        success: function (json) {
+          $('.product-item[data-index="' + prodid + '"]').remove();
+          document.getElementById("cart_qty").innerHTML = json.cartqty
+          document.getElementById("subtotal").innerHTML = parseFloat(json.totalcartprice).toLocaleString()
+          document.getElementById("total").innerHTML = parseFloat(json.totalcartprice).toLocaleString()
+          if (json.cartqty == 0){
+            console.log("hehehe")
+            document.getElementById("order_button").setAttribute("href","");
+          }
+        },
+        error: function (xhr, errmsg, err) {}
+      });
+    })
+  
+    // Cập nhật sản phẩm
+    $(document).on('click', '.update-button', function (e) {
+      e.preventDefault();
+      var prodid = $(this).data('index');
+      $.ajax({
+        type: 'POST',
+        url: '{% url "cart:cart_update" %}',
+        data: {
+          productid: $(this).data('index'),
+          {% comment %} productqty: $('#select' + prodid + ' option:selected').text(), {% endcomment %}
+          productqty: document.getElementById("product_qty" + prodid).innerText,
+          csrfmiddlewaretoken: "{{csrf_token}}",
+          action: 'post'
+        },
+        success: function (json) {
+          document.getElementById("cart_qty").innerHTML = json.cartqty
+          document.getElementById("subtotal").innerHTML = parseFloat(json.totalcartprice).toLocaleString()
+          document.getElementById("item-total" + prodid).innerHTML  = parseFloat(json.itemtotal).toLocaleString()
+          document.getElementById("total").innerHTML = parseFloat(json.totalcartprice).toLocaleString()
+          if (json.cartqty == 0){
+            document.getElementById("order_button").setAttribute("href","");
+          }
+        },
+        error: function (xhr, errmsg, err) {}
+      });
+    }) 
+    if (cart.len == 0){
+      console.log("hehehe")
+      document.getElementById("order_button").setAttribute("href","");
+    }
+  </script> 
   <script>
     plus = document.querySelectorAll(".plus"),
     minus = document.querySelectorAll(".minus"),
