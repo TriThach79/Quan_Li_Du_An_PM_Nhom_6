@@ -61,3 +61,24 @@ class UserLoginForm(AuthenticationForm):
         super().__init__(request, *args, **kwargs)
         self.fields['username'].label = 'Email'
         self.fields['password'].label = 'Mật khẩu'
+
+class CheckoutForm(forms.ModelForm):
+    full_name = forms.CharField(
+        label='Họ và tên', min_length=2, max_length=50, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Họ và tên', 'id': 'form-fullname'}))
+    phone_number = forms.CharField(
+        label='Số điện thoại', min_length=10, max_length=11, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Số điện thoại', 'id': 'form-phone'}))
+    address_1 = forms.CharField(
+        label='Địa chỉ:', min_length=5, max_length=255, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Địa chỉ nhận', 'id': 'form-address'}))
+    
+    class Meta:
+        model = Order
+        fields = ('full_name', 'phone', 'address1')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['full_name'].required = True
+        self.fields['phone'].required = False
+        self.fields['address1'].required = False

@@ -1,0 +1,127 @@
+{% extends '../base.html' %}
+
+{% block content %}
+<style>
+    {% comment %} * {
+        font-family: "vazir";
+        direction: rtl;
+      }  {% endcomment %}
+      
+      .card-failed {
+        box-shadow:
+        0 15px 16.8px rgba(0, 0, 0, 0.031),
+        0 100px 134px rgba(0, 0, 0, 0.05)
+      ;
+        background-color: white;
+        border-radius: 15px;
+        padding: 35px;
+      }
+      
+      .top-failed {
+        padding-bottom: 25px;
+        min-width: 250px;
+        text-align: center;
+        border-bottom: dashed #dfe4f3 2px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-left: 0.18em dashed #fff;
+        position: relative;
+      }
+      .top-failed:before {
+        background-color: #fafcff;
+        position: absolute;
+        content: "";
+        display: block;
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+        bottom: 0;
+        right: -10px;
+        margin-bottom: -10px;
+      }
+      
+      .card-failed svg,
+      h3 {
+        color: #e5383b;
+      }
+      .card-failed svg {
+        margin: 0 auto;
+        width: 60px;
+        height: 60px;
+      }
+      .card-failed h3 {
+        margin-top: 0px;
+        margin-bottom: 10px;
+      }
+      .card-failed span {
+        color: #adb3c4;
+        font-size: 12px;
+      }
+      .bottom-failed{
+        text-align: center;
+        margin-top: 30px;
+      }
+      .key-value{
+        display: flex;
+        justify-content: center;
+      }
+      .key-value span:first-child{
+        font-weight: 00;
+      }
+      .card-failed a{
+        padding: 8px 20px;
+        background-color: #e5383b;
+        text-decoration: none;
+        color: white;
+        border-radius: 8px;
+        font-size: 14px;
+        margin-top: 20px;
+        display: block;
+      }
+      .outer-container {
+        background-color: #fafcff;
+        {% comment %} position: absolute; {% endcomment %}
+        display: table;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        right: 0;
+      }
+      
+      .inner-container {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+      }
+      
+      .centered-content {
+        display: inline-block;
+        text-align: left;
+        background: #fff;
+        margin-top: 10px;
+      }      
+</style>
+<div class="outer-container failed mt-3 mb-5">
+    <div class="inner-container">
+      <div class="card-failed centered-content">
+        <div class="top-failed">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+          <h3>
+            Failed Payment
+          </h3>
+          <span>Your order has not been placed</span>
+        </div>
+        <div class="bottom-failed">
+          <div class="key-value">
+            <span>Please try again!</span>
+          </div>
+          <a href="/">Back to Homepage</a>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+
+{% endblock %}

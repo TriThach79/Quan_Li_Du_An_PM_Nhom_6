@@ -1,0 +1,50 @@
+
+{% extends '../base.html' %}
+{% block title %}{% endblock title %}
+{% block content %}
+<div class="container mx-5 px-5">
+    <form class="account-form px-4 pt-4" action="." method="post" enctype="multipart/form-data">
+        {% if info_form.is_valid%}
+        <div class="alert alert-success" role="alert">
+            Thông tin nhận hàng đã được lưu, vui lòng bấm nút bên dưới để thanh toán
+        </div>
+        {%else%}
+        <h3>Thông tin nhận hàng</h3>
+        <p>Hãy điền theo form sau:</p>
+        {% endif %}
+        {% if info_form.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{info_form.errors}}
+        </div>
+        {% endif %}
+        {% for field in info_form.errors %}
+        {% if field.errors%}
+        <div class="alert alert-primary" role="alert">
+            {{field.errors}}
+        </div>
+        {% endif %}
+        {% endfor%}
+        {% csrf_token %}
+
+        <label class="small font-weight-bold">{{ info_form.full_name.label}}</label>
+        {{ info_form.full_name }}
+        <label class="small font-weight-bold">{{ info_form.phone_number.label}}</label>
+        {{ info_form.phone_number }}
+        <label class="small font-weight-bold">{{ info_form.address_1.label}}</label>
+        {{ info_form.address_1 }}
+
+        <button class="btn btn-primary btn-block py-2 mb-4 mt-5 fw-bold w-100" type="submit"
+            value="Save changes">Xác nhận thông tin</button>
+        <hr class="mb-3">
+    </form>
+
+    {% if request.POST %}
+    <div class="text-center">
+
+        <div><img width="96" height="96" src="https://img.icons8.com/fluency/96/down.png" alt="down"/></div>
+        <button class="btn-outline-primary mt-3">{{ form.render }}</button>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock content %}
