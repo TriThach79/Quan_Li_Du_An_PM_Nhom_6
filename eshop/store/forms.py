@@ -82,3 +82,41 @@ class CheckoutForm(forms.ModelForm):
         self.fields['full_name'].required = True
         self.fields['phone'].required = False
         self.fields['address1'].required = False
+
+class EditInfoForm(forms.ModelForm):
+    email = forms.EmailField(
+        label='Emai (Không thể thay đổi)', max_length=200, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'email', 'id': 'form-email', 'readonly': 'readonly'}))
+
+    username = forms.CharField(
+        label='Username', min_length=4, max_length=50, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Username', 'id': 'form-username', 'readonly': 'readonly'}))
+    last_name = forms.CharField(
+        label='Họ', min_length=2, max_length=50, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Họ của bạn', 'id': 'form-last-name'}))
+
+    first_name = forms.CharField(
+        label='Tên', min_length=2, max_length=50, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Tên của bạn', 'id': 'form-firstname'}))
+    phone_number = forms.CharField(
+        label='Số điện thoại', min_length=10, max_length=11, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Số điện thoại của bạn', 'id': 'form-phone'}))
+    address_1 = forms.CharField(
+        label='Địa chỉ:', min_length=10, max_length=255, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Địa chỉ của bạn', 'id': 'form-address'}))
+    address_2 = forms.CharField(
+        label='Địa chỉ 2:', min_length=10, max_length=255, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Địa chỉ của bạn', 'id': 'form-address'}))
+    
+    class Meta:
+        model = User
+        fields = ('email', 'last_name', 'first_name', 'phone_number', 'address_1')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].required = False
+        self.fields['first_name'].required = True
+        self.fields['email'].required = True
+        self.fields['phone_number'].required = False
+        self.fields['address_1'].required = False
+        self.fields['address_2'].required = False

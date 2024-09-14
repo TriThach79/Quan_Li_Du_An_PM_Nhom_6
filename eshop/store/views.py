@@ -23,7 +23,7 @@ from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
 
 from .models import Category, Product
-from .forms import (CreateUserForm)
+from .forms import (CreateUserForm, EditInfoForm)
 # Create your views here.
 
 
@@ -132,3 +132,33 @@ def user_activate(request, uidb64, token):
         return redirect('store:login')
     else:
         return render(request, 'account/fail_to_activate.html')
+    
+@login_required
+def dashboard(request):
+    orders = user_orders(request)
+    return render(request, 'account/dashboard.html', {'orders' : orders})
+
+@login_required
+def user_orders(request):
+    user_id = request.user.id
+    orders = Order.objects.filter(user_id=user_id).filter(billing_status=True)
+    return orders
+
+@login_required
+def profile(request):
+    return render(
+            request,
+            "account/profile.html",
+            )
+
+@login_required
+def edit_info(request):
+    if request.method == "POST":
+        user_form = EditInfoForm(instance = request.user, data = request.POST)
+        
+        if user_form.is_valid():
+            print(user_form)
+            user_form.save()
+    else:
+        user_form = EditInfoForm(instance = request.user)
+    return render(request, "account/edit_info.html", {'user_form': user_form})
