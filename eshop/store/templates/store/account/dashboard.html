@@ -1,0 +1,80 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Cart Summary{%endblock %}
+{% block content %}
+<style>
+*{
+  font-family: 'Roboto', sans-serif;
+}
+</style>
+<main class="pt-5">
+  <div class="container" style="max-width: 1000px">
+    <div class="col-12">
+      <h1 class="h2 mb-3">Đơn hàng của bạn</h1>
+    </div>
+    <div class="col-12 d-flex justify-content-between">
+      <div>Quản lí <b>đơn hàng</b> và thông tin của bạn</div>
+      <div><a class ="btn btn-info" href="{% url 'store:edit_info' %}">Thay đổi thông tin</a></div>
+    </div>
+    <hr />
+  </div>
+  <div class="container" style="max-width: 1000px">
+    {% for order in orders %}
+    <div class="row mb-4" style="border: 2px solid #ff6600;">
+      
+      <div class="col-12 p-3 mb-3 d-flex justify-content-between text-light" style="background-color: #346e51 !important;">
+        <div class="d-flex d-flex-inline">
+          <div class="pe-3 d-inline-flex"><p class ="fw-bold mx-2">Mã đơn hàng: </p> {{order.id}} | <p class ="fw-bold mx-2"> Ngày đặt: </p> {{ order.created }}</div>
+          <div class="dropdown"></div>
+        </div>
+        <div class="text-end">
+          Tổng tiền: <span class="fw-bold">{{ order.total_paid|intcomma }}</span>
+        </div>
+      </div>
+      <div class="col-md-5 col-lg-4 order-md-last p-0 order-3">
+        <div class="d-grid gap-2 ">
+          {% comment %} <button class="btn btn-warning" type="button">Hàng hóa có vấn đề ?</button>
+          <button class="btn btn-primary" type="button">Bình luận</button> {% endcomment %}
+        </div>
+      </div>
+
+      <div class="col-md-7 col-lg-8 p-0">
+
+        {% for item in order.items.all %}
+
+        <div class="card mb-3 border-0">
+          <div class="row g-0">
+            <div class="col-md-2 d-none d-md-block">
+              <img class="img-fluid" style="width:100px" src="{{item.product.image.url}}" />
+            </div>
+            <div class="col-md-10">
+              <div class="card-body p-1">
+                <a class="text-decoration-none fw-bold text-secondary" href="{{ item.product.get_absolute_url }}">
+                  <p class="card-text small">{{item.product|title}}</p>
+                </a>
+                <p class="card-text small my-1">x{{item.quantity}}</p>
+                <p class="card-text small">{{item.price|floatformat:0|intcomma}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+        {% endfor %}
+
+
+      </div>
+
+    </div>
+    {% endfor %}
+
+  </div>
+</main>
+
+
+
+
+
+
+{% endblock %}
