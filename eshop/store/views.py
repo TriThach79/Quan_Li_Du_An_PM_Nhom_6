@@ -162,3 +162,77 @@ def edit_info(request):
     else:
         user_form = EditInfoForm(instance = request.user)
     return render(request, "account/edit_info.html", {'user_form': user_form})
+
+def number_order_by_month(orders, month = None, year = None, from_date = None, to_date = None):
+    if month:
+        orders = orders.filter(created__month = month)
+    if from_date:
+        orders = orders.filter(created__gte = from_date)
+    if to_date:
+        orders = orders.filter(created__lt = to_date)
+    # count_by_month = orders.raw("SELECT strftime('%m', created) as month, COUNT(*) as count, id FROM store_order WHERE billing_status = True GROUP BY strftime('%m', created)")
+    count_by_month_data = orders.values('created__month').annotate(count=Count('id'))
+    l = []
+    for i in count_by_month_data:
+        l.append({i['created__month']:i['count']})
+    counter = Counter()
+    for d in l:
+        counter.update(d)
+
+    result = dict(counter).items()
+    return result
+
+def number_order_by_day(orders, month = None, year = None, from_date = None, to_date = None):
+    if month:
+        orders = orders.filter(created__month = month)
+    if from_date:
+        orders = orders.filter(created__gte = from_date)
+    if to_date:
+        orders = orders.filter(created__lt = to_date)
+    count_by_day_data = orders.values('created__day').annotate(count=Count('id'))
+    l = []
+    for i in count_by_day_data:
+        l.append({i['created__day']:i['count']})
+    counter = Counter()
+    for d in l:
+        counter.update(d)
+
+    result = dict(counter).items()
+    return result
+
+def revenue_by_month(orders, month = None, year = None, from_date = None, to_date = None):
+    if month:
+        orders = orders.filter(created__month = month)
+    if from_date:
+        orders = orders.filter(created__gte = from_date)
+    if to_date:
+        orders = orders.filter(created__lt = to_date)
+    # count_by_month = orders.raw("SELECT strftime('%m', created) as month, COUNT(*) as count, id FROM store_order WHERE billing_status = True GROUP BY strftime('%m', created)")
+    revenue_by_month_data = orders.values('created__month').annotate(revenue=Sum('total_paid'))
+    l = []
+    for i in revenue_by_month_data:
+        l.append({i['created__month']:i['revenue']})
+    counter = Counter()
+    for d in l:
+        counter.update(d)
+    result = dict(counter).items()
+    return result
+
+def revenue_by_day(orders, month = None, year = None, from_date = None, to_date = None):
+    if month:
+        orders = orders.filter(created__month = month)
+    if from_date:
+        orders = orders.filter(created__gte = from_date)
+    if to_date:
+        orders = orders.filter(created__lt = to_date)
+    # count_by_month = orders.raw("SELECT strftime('%m', created) as month, COUNT(*) as count, id FROM store_order WHERE billing_status = True GROUP BY strftime('%m', created)")
+    revenue_by_day_data = orders.values('created__day').annotate(revenue=Sum('total_paid'))
+    l = []
+    for i in revenue_by_day_data:
+        l.append({i['created__day']:i['revenue']})
+    counter = Counter()
+    for d in l:
+        counter.update(d)
+    result = dict(counter).items()
+    return result
+
